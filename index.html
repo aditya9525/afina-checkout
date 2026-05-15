@@ -411,7 +411,7 @@
                                         onclick="selectOption(this, event)">🇺🇸 +1</div>
                                 </div>
                             </div>
-                            <input type="tel" placeholder="Phone (Optional)" class="number-dropdown">
+                            <input type="tel" placeholder="Phone (Optional)" class="number-dropdown" id="phone-input" maxlength="10">
                         </div>
                     </div>
 
@@ -456,7 +456,7 @@
                                     <div class="dropdown-item" onclick="selectOption(this, event)">Alaska</div>
                                 </div>
                             </div>
-                            <input type="text" placeholder="Zip Code" class="form-input">
+                            <input type="text" placeholder="Zip Code" class="form-input" id="zip-code" maxlength="6">
                         </div>
 
 
@@ -510,7 +510,7 @@
                             <div class="payment-body">
 
                                 <div class="input-box">
-                                    <input type="text" placeholder="Card Number">
+                                    <input type="text" placeholder="Card Number" id="card-number" maxlength="19">
 
                                     <div class="icon">
                                         <img src="./images/payment-lock.png" alt="">
@@ -521,11 +521,11 @@
                                 <div class="row">
 
                                     <div class="input-box">
-                                        <input type="text" placeholder="Expiry (MM/YY)">
+                                        <input type="text" placeholder="Expiry (MM/YY)" id="card-expiry" maxlength="5">
                                     </div>
 
                                     <div class="input-box">
-                                        <input type="text" placeholder="CVV Code">
+                                        <input type="text" placeholder="CVV Code" id="card-cvv" maxlength="4">
 
                                         <div class="icon"><img src="./images/Layer34.png" alt=""></div>
                                     </div>
@@ -1271,6 +1271,70 @@
                     btn.setAttribute('aria-expanded', 'true');
                 }
             });
+        });
+    </script>
+
+    <script>
+        // ===== ZIP CODE: numbers only, max 6 =====
+        const zipInput = document.getElementById('zip-code');
+        zipInput.addEventListener('input', function () {
+            this.value = this.value.replace(/\D/g, '').slice(0, 6);
+        });
+
+        // ===== PHONE: numbers only, max 10 =====
+        const phoneInput = document.getElementById('phone-input');
+        phoneInput.addEventListener('input', function () {
+            this.value = this.value.replace(/\D/g, '').slice(0, 10);
+        });
+
+        // ===== CARD NUMBER: format XXXX XXXX XXXX XXXX =====
+        const cardInput = document.getElementById('card-number');
+        cardInput.addEventListener('input', function () {
+            let digits = this.value.replace(/\D/g, '').slice(0, 16);
+            let formatted = digits.replace(/(\d{4})(?=\d)/g, '$1 ');
+            this.value = formatted;
+        });
+
+        // ===== EXPIRY: auto-format MM/YY =====
+        const expiryInput = document.getElementById('card-expiry');
+        expiryInput.addEventListener('input', function (e) {
+            let val = this.value.replace(/\D/g, '').slice(0, 4);
+
+            // Validate month: first digit > 1 → prepend 0
+            if (val.length >= 1) {
+                let firstDigit = parseInt(val[0]);
+                if (firstDigit > 1) {
+                    val = '0' + val;
+                }
+            }
+
+            // Validate month: if 2 digits, cap at 12
+            if (val.length >= 2) {
+                let month = parseInt(val.substring(0, 2));
+                if (month > 12) val = '12' + val.substring(2);
+                if (month === 0) val = '01' + val.substring(2);
+            }
+
+            // Add slash after MM
+            if (val.length > 2) {
+                val = val.substring(0, 2) + '/' + val.substring(2);
+            }
+
+            this.value = val;
+        });
+
+        // Prevent deleting the slash awkwardly
+        expiryInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Backspace' && this.value.length === 4 && this.value[2] === '/') {
+                this.value = this.value.substring(0, 2);
+                e.preventDefault();
+            }
+        });
+
+        // ===== CVV: numbers only, max 4 =====
+        const cvvInput = document.getElementById('card-cvv');
+        cvvInput.addEventListener('input', function () {
+            this.value = this.value.replace(/\D/g, '').slice(0, 4);
         });
     </script>
 </body>
