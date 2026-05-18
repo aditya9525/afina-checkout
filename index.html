@@ -1345,6 +1345,43 @@
             this.value = this.value.replace(/\D/g, '').slice(0, 4);
         });
     </script>
+
+    <script>
+        // ===== COUNTDOWN TIMER =====
+        (function () {
+            const TIMER_KEY = 'afina_timer_end';
+            const INITIAL_SECONDS = (16 * 3600) + (19 * 60) + 25; // 16h 19m 25s
+
+            // If no end time stored, set it
+            if (!sessionStorage.getItem(TIMER_KEY)) {
+                const endTime = Date.now() + INITIAL_SECONDS * 1000;
+                sessionStorage.setItem(TIMER_KEY, endTime);
+            }
+
+            function pad(n) {
+                return String(n).padStart(2, '0');
+            }
+
+            function updateTimer() {
+                const endTime = parseInt(sessionStorage.getItem(TIMER_KEY), 10);
+                const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+
+                const h = Math.floor(remaining / 3600);
+                const m = Math.floor((remaining % 3600) / 60);
+                const s = remaining % 60;
+
+                document.getElementById('hours').textContent = pad(h);
+                document.getElementById('minutes').textContent = pad(m);
+                document.getElementById('seconds').textContent = pad(s);
+
+                if (remaining > 0) {
+                    setTimeout(updateTimer, 1000);
+                }
+            }
+
+            updateTimer();
+        })();
+    </script>
 </body>
 
 </html>
