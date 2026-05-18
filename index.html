@@ -248,9 +248,7 @@
 
                 <div class="refill-box">
 
-                    <div class="checkbox-box">
-                        <img src="./images/check-icon.png" alt="">
-                    </div>
+                    <input type="checkbox" id="refill-checkbox" class="refill-checkbox" checked>
 
                     <div class="content">
                         <h2>Save Extra 20% With Filter-Auto-Refill</h2>
@@ -272,13 +270,13 @@
                         <p class="availble-text">Availble In 3 Finishes (3 Colors)</p>
 
                         <div class="abailble-items-container">
-                            <div class="abailble-items-item">
+                            <div class="abailble-items-item active" onclick="selectItem(this)">
                                 <img src="./images/deep-gray-shower.png" alt="shower-img">
                             </div>
-                            <div class="abailble-items-item">
+                            <div class="abailble-items-item" onclick="selectItem(this)">
                                 <img src="./images/gray-shower.png" alt="shower-img">
                             </div>
-                            <div class="abailble-items-item">
+                            <div class="abailble-items-item" onclick="selectItem(this)">
                                 <img src="./images/black-shower.png" alt="shower-img">
                             </div>
                         </div>
@@ -317,8 +315,8 @@
                             <div class="custom-dropdown" onclick="toggleDropdown(this)">
                                 <div class="dropdown-header">
                                     <div class="dropdown-value-wrapper">
-                                        <span class="color-dot chrome"></span>
-                                        <span class="dropdown-value">Chrome</span>
+                                        <span class="color-dot nickel"></span>
+                                        <span class="dropdown-value">Nickel</span>
                                     </div>
                                     <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"
                                         stroke="currentColor" stroke-width="2">
@@ -343,8 +341,8 @@
                             <div class="custom-dropdown" onclick="toggleDropdown(this)">
                                 <div class="dropdown-header">
                                     <div class="dropdown-value-wrapper">
-                                        <span class="color-dot chrome"></span>
-                                        <span class="dropdown-value">Chrome</span>
+                                        <span class="color-dot black"></span>
+                                        <span class="dropdown-value">Black</span>
                                     </div>
                                     <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"
                                         stroke="currentColor" stroke-width="2">
@@ -411,7 +409,8 @@
                                         onclick="selectOption(this, event)">🇺🇸 +1</div>
                                 </div>
                             </div>
-                            <input type="tel" placeholder="Phone (Optional)" class="number-dropdown" id="phone-input" maxlength="10">
+                            <input type="tel" placeholder="Phone (Optional)" class="number-dropdown" id="phone-input"
+                                maxlength="10">
                         </div>
                     </div>
 
@@ -494,14 +493,10 @@
                                 </div>
 
                                 <div class="card-icons">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"
-                                        alt="">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg"
-                                        alt="">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg"
-                                        alt="">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/57/Discover_Card_logo.svg"
-                                        alt="">
+                                    <img src="./images/visa.png" alt="visa-card">
+                                    <img src="./images/master.png" alt="master-card">
+                                    <img src="./images/amex.png" alt="amex-card">
+                                    <img src="./images/discovery.png" alt="discovery-card">
                                 </div>
 
                             </div>
@@ -539,7 +534,7 @@
 
                 </div>
 
-                <div class="summary-box mobile-view-summary" onclick="toggleSummary()">
+                <div class="summary-box mobile-view-summary" onclick="toggleSummary(this)">
 
                     <div class="summary-header">
 
@@ -684,7 +679,7 @@
                 </div>
             </div>
             <div class="checkout-summary ">
-                <div class="summary-box desktop-view" onclick="toggleSummary()">
+                <div class="summary-box desktop-view" onclick="toggleSummary(this)">
 
                     <div class="summary-header">
 
@@ -1201,6 +1196,10 @@
 
 
     <script>
+        function selectItem(item) {
+            item.classList.toggle('active');
+        }
+
         function selectCard(card) {
 
             document.querySelectorAll('.offer-card')
@@ -1209,9 +1208,8 @@
             card.classList.add('active');
         }
 
-        function toggleSummary() {
-            const summaryBox = document.querySelector('.summary-box');
-            summaryBox.classList.toggle('collapsed');
+        function toggleSummary(element) {
+            element.classList.toggle('collapsed');
         }
 
         function toggleDropdown(dropdown) {
@@ -1238,7 +1236,17 @@
                 valueDot.className = 'color-dot ' + colorClass;
             }
 
-            dropdownValue.textContent = value;
+            // Preserve arrow img inside contrary-value dropdowns
+            if (dropdownValue.classList.contains('contrary-value')) {
+                const arrowImg = dropdownValue.querySelector('img');
+                dropdownValue.textContent = '';
+                const textParts = value.split(/\s+/);
+                dropdownValue.appendChild(document.createTextNode(textParts[0] + ' '));
+                if (arrowImg) dropdownValue.appendChild(arrowImg);
+                dropdownValue.appendChild(document.createTextNode(' ' + textParts.slice(1).join(' ')));
+            } else {
+                dropdownValue.textContent = value;
+            }
             dropdown.classList.remove('active');
         }
 
