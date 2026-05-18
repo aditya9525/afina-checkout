@@ -1917,6 +1917,7 @@
 }
 
 .review-text {
+    font-style: italic;
     font-size: 17px;
     line-height: 1.4;
     color: #000000;
